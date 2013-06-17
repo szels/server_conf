@@ -1,0 +1,33 @@
+<VirtualHost *:80>
+        ServerAdmin     webmaster@example.de
+        ServerName      www.example.de
+        ServerAlias     example.de *.example.de
+
+
+        DocumentRoot /data/htdocs
+        ErrorLog /data/logs/apache2/example.de_error.log
+        CustomLog /data/logs/apache2/example.de_access.log  example
+
+
+        RewriteEngine on
+        RewriteCond %{REQUEST_METHOD}   !^(GET|POST|HEAD)$
+        RewriteRule .*                  -                               [F]
+        RewriteCond %{REQUEST_METHOD}   .
+        RewriteRule .*                  -                               [E=SCHEME:http]
+        # we need set http/https Scheme from Loadbalancer-Header: X-Forwarded-Protocol
+        RewriteCond %{HTTP:X-Forwarded-Protocol}        https
+        RewriteRule .*                                  -               [E=HTTPS:on,E=SCHEME:https]
+        # we don't want duplicated Content for SEO
+        RewriteCond %{HTTP_HOST}                        !^(admin|static-?.*|www|testit.*)\.[^.]+\.de:?[0-9]*$   [NC]
+        RewriteCond %{HTTP_HOST}                        !^(|127\.0\.0\.1|10\.[0-9]+\.[0-9]+\.[0-9]+)$           [NC]
+        RewriteRule (.*)                                %{HTTP_HOST}$1                                          [C]
+        RewriteRule ^(|.*\.)([^.]+)\.de:?[0-9]*(/.*)$   %{ENV:SCHEME}://www.$2.de$3                             [L,R=permanent]
+
+	# required www-subdomain
+	RewriteCond %{HTTP_HOST}		!^(www)\.example\.([a-z]*):?[0-9]*$
+	RewriteRule (.*)			%{ENV:SCHEME}://www.example.de/$1
+
+	Alias /static_media /data/app/p0/webapps/ROOT/static_media
+        JkUnMount /static_media/*  loadbalancer
+        JkMount   /*	loadbalancer
+</VirtualHost>

@@ -1,0 +1,1 @@
+LogFormat       "%h %l %u %t %T %D \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %{X-Forwarded-Protocol}i %{BIGipServerTEG_www.example.de_http}C \"%{Location}o\" Host=%{Host}i PID=%P TIME=%T MICROTIME=%D"                example

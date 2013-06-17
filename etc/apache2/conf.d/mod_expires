@@ -1,0 +1,8 @@
+        FileETag MTime Size
+        <IfModule mod_expires.c>
+                ExpiresActive On
+                ExpiresByType image/png A86400
+                ExpiresByType image/jpeg A86400
+                ExpiresByType text/css A7200
+                ExpiresDefault A3600
+        </IfModule>

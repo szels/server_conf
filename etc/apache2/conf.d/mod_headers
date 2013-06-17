@@ -1,0 +1,3 @@
+<IfModule mod_headers.c>
+        Header  Set     X-Server        http2
+</IfModule>

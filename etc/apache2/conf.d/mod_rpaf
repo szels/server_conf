@@ -1,0 +1,9 @@
+<IfModule mod_rpaf.c>
+#
+# Allow this host to log REMOTE_ADDR as usal even with squid/apache proxy in front.
+# RPAFsethostname Off because we set the HTTP_HOST ourself and not from Squid
+#
+        RPAFenable      On
+        RPAFsethostname Off
+        RPAFproxy_ips   127.0.0.1 12.34.56.78
+</IfModule>
